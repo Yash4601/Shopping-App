@@ -1,35 +1,67 @@
 const path = require('path');
 
 const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const errorController = require('./controllers/errorController');
-const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user');
 
+const MONGODB_URI = 'mongodb+srv://YashAgrawal:28uZXb8zHaElxUQa@cluster0.gxlzm.mongodb.net/shop?'
+
 const app = express();
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: 'sessions'
+})
 
 app.set('view engine', 'ejs');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+    extended: false
+}));
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use((req, res, next) => {
-  User.findById('609c37bf257c650fda43b2e3')
-    .then(user => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch(err => console.log(err));
-});
+app.use(session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+}));
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorController.get404Page);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+mongoose.connect(
+        MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false,
+            useCreateIndex: true
+        })
+    .then(result => {
+        User.findOne()
+            .then(user => {
+                if (!user) {
+                    const user = new User({
+                        name: 'Yash Agrawal',
+                        email: 'yashagrawal4601@gmail.com',
+                        cart: {
+                            items: []
+                        }
+                    });
+                    user.save();
+                }
+            })
+        app.listen(3000);
+    })
+    .catch(err => {
+        console.log(err);
+    })
