@@ -22,7 +22,6 @@ router.post(
       .isString().withMessage('Title must contain atleast 3 characters.')
       .isLength({ min: 3 })
       .trim(),
-    body('imageUrl').isURL().withMessage('Invalid Url'),
     body('price').isFloat().withMessage('Price must be a decimal value.'),
     body('description')
       .isLength({ min: 5, max: 400 }).withMessage('Description must be between 5-400 characters.')
@@ -41,7 +40,6 @@ router.post(
       .isString().withMessage('Title must contain atleast 3 characters.')
       .isLength({ min: 3 })
       .trim(),
-    body('imageUrl').isURL().withMessage('Invalid Url'),
     body('price').isFloat().withMessage('Price must be a decimal value.'),
     body('description')
       .isLength({ min: 5, max: 400 }).withMessage('Description must be between 5-400 characters.')
