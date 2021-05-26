@@ -19,13 +19,12 @@ router.post(
   '/add-product',
   [
     body('title')
-      .isString().withMessage('Title must contain atleast 3 characters.')
+      .isString()
       .isLength({ min: 3 })
       .trim(),
-    body('imageUrl').isURL().withMessage('Invalid Url'),
-    body('price').isFloat().withMessage('Price must be a decimal value.'),
+    body('price').isFloat(),
     body('description')
-      .isLength({ min: 5, max: 400 }).withMessage('Description must be between 5-400 characters.')
+      .isLength({ min: 5, max: 400 })
       .trim()
   ],
   isAuth,
@@ -38,13 +37,12 @@ router.post(
   '/edit-product',
   [
     body('title')
-      .isString().withMessage('Title must contain atleast 3 characters.')
+      .isString()
       .isLength({ min: 3 })
       .trim(),
-    body('imageUrl').isURL().withMessage('Invalid Url'),
-    body('price').isFloat().withMessage('Price must be a decimal value.'),
+    body('price').isFloat(),
     body('description')
-      .isLength({ min: 5, max: 400 }).withMessage('Description must be between 5-400 characters.')
+      .isLength({ min: 5, max: 400 })
       .trim()
   ],
   isAuth,
